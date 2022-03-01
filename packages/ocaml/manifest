@@ -1,0 +1,2 @@
+RUN eval "$(opam env)"
+BIN "$OPAM_SWITCH_PREFIX"/{bin,lib,share}

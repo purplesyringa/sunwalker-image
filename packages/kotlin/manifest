@@ -1,0 +1,4 @@
+KOTLIN=/usr/lib/kotlinc/bin/kotlin
+KOTLINC=/usr/lib/kotlinc/bin/kotlinc
+BIN "$KOTLIN" "$KOTLINC"
+BIN /usr/lib/kotlinc

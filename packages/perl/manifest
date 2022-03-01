@@ -1,0 +1,3 @@
+BIN perl
+BIN /usr/local/lib/perl5
+BIN /usr/lib/locale /usr/share/i18n/locales/en_US /usr/share/locale/locale.alias

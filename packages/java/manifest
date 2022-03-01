@@ -1,0 +1,3 @@
+JAVA=/usr/bin/java
+JAVAC=/usr/bin/javac
+BIN "$JAVA" "$JAVAC"

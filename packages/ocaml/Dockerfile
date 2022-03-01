@@ -1,0 +1,1 @@
+FROM ocaml/opam:latest
