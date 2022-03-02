@@ -3,7 +3,7 @@ set -e
 
 
 if [[ "$1" != "--unshared" ]]; then
-	exec unshare -U -r -m "$0" --unshared "$@"
+	exec unshare -p -f --kill-child -U -r -m "$0" --unshared "$@"
 fi
 shift
 
@@ -95,13 +95,16 @@ for file in "${files[@]}"; do
 	fi
 done
 
+mkdir "$root/tmp/root/proc"
+mount -t proc proc "$root/tmp/root/proc"
+
 mkdir "$root/tmp/root/old-root"
 
 cd "$root/tmp/root"
 
 pivot_root . old-root
 
-export LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
+export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
 export LANGUAGE=en_US
 export LC_ALL=en_US.UTF-8
 export LC_ADDRESS=en_US.UTF-8
