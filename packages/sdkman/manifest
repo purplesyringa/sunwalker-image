@@ -1,0 +1,3 @@
+RUN . "$HOME/.sdkman/bin/sdkman-init.sh"
+BIN "$JAVA_HOME" "$KOTLIN_HOME" "$SCALA_HOME"
+BIN dirname readlink uname

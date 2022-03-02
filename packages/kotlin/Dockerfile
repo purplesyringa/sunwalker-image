@@ -1,1 +1,0 @@
-FROM schlaubiboy/kotlin:latest
