@@ -1,0 +1,22 @@
+BIN pypy
+BIN /opt/pypy/lib*
+
+LD_LIBRARY_PATH="/opt/pypy/lib:$LD_LIBRARY_PATH"
+
+# Everyone uses '#!/usr/bin/env python'. Except cgi.py, which uses '#!/usr/local/bin/python'. Their rationale? Python is
+# installed to /usr/local/bin by default, and /usr/local/bin is not in PATH on some systems. And if someone installs
+# Python in another directory (e.g. distribution maintainers), they probably know what they are doing and can patch
+# cgi.py. This logic is sound, except that PyPy maintainers on Dockerhub apparently don't know what they are doing.
+#
+# It gets worse: there is no executable called 'python' in pypy:2, so '#!/usr/bin/env python' does not work either. This
+# is fixed by aliasing 'pypy' to 'python' in pypy:3, but not in pypy:2. We fix this too.
+#
+# Notice that we put the fictious 'python' link to /usr/local/bin, which means patching the shebang of cgi.py is no
+# longer required, but this is still a bug that might manifest itself if the second problem is fixed in mainstream but
+# the first one is not, so we keep it in place.
+#
+# This is tracked by https://github.com/docker-library/pypy/issues/71.
+RUN sed -i "s|/usr/local/bin/python|/usr/bin/env python|" /opt/pypy/lib-python/2*/cgi.py
+RUN ln -s "$(which pypy)" /usr/local/bin/python
+
+# BIN /lib/terminfo  # required by readline

@@ -1,0 +1,14 @@
+BIN pypy3
+BIN /opt/pypy/lib
+
+LD_LIBRARY_PATH="/opt/pypy/lib:$LD_LIBRARY_PATH"
+
+# Everyone uses '#!/usr/bin/env python'. Except cgi.py, which uses '#!/usr/local/bin/python'. Their rationale? Python is
+# installed to /usr/local/bin by default, and /usr/local/bin is not in PATH on some systems. And if someone installs
+# Python in another directory (e.g. distribution maintainers), they probably know what they are doing and can patch
+# cgi.py. This logic is sound, except that PyPy maintainers on Dockerhub apparently don't know what they are doing.
+#
+# This is tracked by https://github.com/docker-library/pypy/issues/71.
+RUN sed -i "s|/usr/local/bin/python|/usr/bin/env python|" /opt/pypy/lib/pypy3*/cgi.py
+
+BIN /lib/terminfo  # required by readline
