@@ -5,11 +5,6 @@ RUN eval "$(rustup run "$DEFAULT_TOOLCHAIN" bash -c export)"
 BIN "$RUSTUP_HOME"
 
 BIN cc ld
-# BIN ar as gold ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
-# BIN /usr/lib/x86_64-linux-gnu/{rcrt1.o,libubsan.so.1,libtsan.so.0,libtsan_preinit.o,libthread_db.so,libtermcap.a,libtermcap.so,libstdc++.so.6,libseccomp.so.2,librt.a,libreadline.a,libquadmath.so.0,libpthread.a,libpcre*,libnuma.so.1,libmvec.a,libmvec.so,libm-2.31.a,libm.a,libm.so,liblsan.so.0,libg.a,libdl.a,libdl.so,libdb.a,libdb.so,libc.a,libc.so,libc_nonshared.a,libasan.so.6,grcrt1.o,glib-2.0,gcrt1.o,crtn.o,crti.o,crt1.o,Scrt1.o,Mcrt1.o}
 BIN /usr/lib/x86_64-linux-gnu/{*crt*.o,libc.{so,a},libc_nonshared.a,libdl.{so,a},libm.{so,a},libmvec.{so,a},libpthread.{so,a},librt.{so,a},libutil.{so,a}}
 BIN /usr/lib/gcc
-# BIN /usr/local/lib/gcc /usr/local/libexec/gcc /usr/local/lib64
 BIN /usr/lib/bfd-plugins/liblto_plugin.so
-
-# -lgcc_s" "-lutil" "-lrt" "-lpthread" "-lm" "-ldl" "-lc /usr/lib/bfd-plugins/liblto_plugin.so
