@@ -388,11 +388,14 @@ class PackageBuilder:
         for line in lines:
             if line.startswith("\t"):
                 if " => " in line:
-                    name, dest = line.strip().split(" => ", 1)
-                    dest = dest.split()[0]
+                    name = line[1:].partition(" => ")[0]
+                    dest = line.partition(" => ")[2].partition(" (")[0]
+                    if dest == "not found":
+                        print("The linker could not resolve", name)
+                        raise BuildFailure()
                     self.add_binary(dest)
                 elif " (" in line:
-                    name = line.partition("(")[0].strip()
+                    name = line[1:].rpartition(" (")[0]
                     if name.startswith("/"):
                         self.add_binary(name)
 
