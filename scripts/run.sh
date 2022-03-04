@@ -98,11 +98,15 @@ done
 mkdir "$root/tmp/root/proc"
 mount -t proc proc "$root/tmp/root/proc"
 
+mkdir "$root/tmp/root/tmp"
+mount -t tmpfs tmpfs "$root/tmp/root/tmp"
+
 mkdir "$root/tmp/root/old-root"
 
 cd "$root/tmp/root"
 
 pivot_root . old-root
+cd /
 
 export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
 export LANGUAGE=en_US
