@@ -334,7 +334,7 @@ class PackageBuilder:
     # Returns True if the dependencies were added successfully, False is the binary file is to be reconsidered with
     # different linekr settings
     def add_dependencies_from_ldd_output(self, lines: list[str], binary_path: str, linker_kind: str) -> bool:
-        if not lines or lines[0] == "\tstatically linked":
+        if not lines or lines[0] == "\tstatically linked" or lines[0] == "\tnot a dynamic executable":
             # Not a dynamic executable
             return True
 
@@ -393,6 +393,9 @@ class PackageBuilder:
                     if dest == "not found":
                         print("The linker could not resolve", name)
                         raise BuildFailure()
+                    if dest == "":
+                        # ldd sometimes resolves linux-vdso.so.1 as '', for whatever reason
+                        continue
                     self.add_binary(dest)
                 elif " (" in line:
                     name = line[1:].rpartition(" (")[0]
