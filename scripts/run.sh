@@ -108,7 +108,7 @@ cd "$root/tmp/root"
 pivot_root . old-root
 cd /
 
-export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib:/lib64:/lib
 export LANGUAGE=en_US
 export LC_ALL=en_US.UTF-8
 export LC_ADDRESS=en_US.UTF-8
