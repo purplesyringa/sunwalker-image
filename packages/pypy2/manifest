@@ -11,7 +11,7 @@ LD_LIBRARY_PATH="/opt/pypy/lib:$LD_LIBRARY_PATH"
 # It gets worse: there is no executable called 'python' in pypy:2, so '#!/usr/bin/env python' does not work either. This
 # is fixed by aliasing 'pypy' to 'python' in pypy:3, but not in pypy:2. We fix this too.
 #
-# Notice that we put the fictious 'python' link to /usr/local/bin, which means patching the shebang of cgi.py is no
+# Notice that we put the fictitious 'python' link to /usr/local/bin, which means patching the shebang of cgi.py is no
 # longer required, but this is still a bug that might manifest itself if the second problem is fixed in mainstream but
 # the first one is not, so we keep it in place.
 #
