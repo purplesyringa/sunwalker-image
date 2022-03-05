@@ -1,1 +1,5 @@
 BIN go
+BIN /usr/local/go
+
+# Go supports Plan 9. Wow.
+RUN rm -r /usr/local/go/src/*.rc
