@@ -48,6 +48,8 @@ class PackageBuilder:
         self.linker_kind_cache: dict[str, str] = {}  # key is absolute path to ld.so, value is gnu/musl
 
         self.readlink_supports_zero_terminated_output: Optional[bool] = None  # exactly what it says on the tin
+        self.awk_supports_nextfile: Optional[bool] = None  # whether the 'nextfile' command is supported by awk. it's in
+                                                           # POSIX and gawk supports it, but e.g. mawk does not
         self.default_linker_kind: Optional[str] = None  # kind of default dynamic interpreter (that ldd uses; gnu/musl)
 
 
@@ -154,6 +156,11 @@ class PackageBuilder:
         readlink_help = self.run_docker_oneshot(["readlink", "--help"]).decode()
         self.readlink_supports_zero_terminated_output = " -z" in readlink_help
         print("-> readlink -z supported:", self.readlink_supports_zero_terminated_output)
+
+        awk_output = self.run_docker(["sh", "-c", "printf 'a\nb\n' | awk '{print $1} {nextfile}'"], capture_output=True).stdout.decode()
+        assert awk_output in ("a\n", "a\nb\n")
+        self.awk_supports_nextfile = awk_output == "a\n"
+        print("-> awk {nextfile} supported:", self.awk_supports_nextfile)
 
         ldd_version = self.run_docker_oneshot(["ldd", "--version"], check=False)[1].decode()
         if "GLIBC" in ldd_version:
@@ -263,8 +270,12 @@ class PackageBuilder:
             # we can still try.
 
             # For scripts, read the shebang
-            shebangs = self.split_null(self.run_docker_oneshot(["find", *lst.keys(), "-type", "f", "-executable", "-exec", "awk", "/^#!.*/{printf(\"%s%c\", $0, 0)} {nextfile}", "{}", "+"]).decode())
-            for shebang in shebangs:
+            if self.awk_supports_nextfile:
+                awk_cmdline = "/^#!.*/{printf(\"%s%c%s%c\", FILENAME, 0, $0, 0)} {nextfile}"
+            else:
+                awk_cmdline = "NR==1&&/^#!.*/{printf(\"%s%c%s%c\", FILENAME, 0, $0, 0)}"
+            shebangs = self.split_null(self.run_docker_oneshot(["find", *lst.keys(), "-type", "f", "-executable", "-exec", "awk", awk_cmdline, "{}", "+"]).decode())
+            for script, shebang in zip(shebangs[::2], shebangs[1::2]):
                 splitted = shebang[2:].strip().split(" ", 1)
                 interp = splitted[0]
                 interp_arg = None if len(splitted) == 1 else splitted[1]
