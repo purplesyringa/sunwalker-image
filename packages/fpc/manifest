@@ -1,1 +1,4 @@
 BIN fpc
+BIN ppcx64
+BIN ld
+BIN /usr/lib/fpc
