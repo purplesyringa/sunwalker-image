@@ -1,0 +1,12 @@
+# Remove heavy profiling builds
+RUN find /opt/ghc/*/lib \( -name "*_p.a" -o -name "*.p_hi" -o -name "*.p_o" \) -delete
+
+BIN ghc
+BIN /opt/ghc
+
+BIN gcc
+BIN ar as cpp gold ld ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
+BIN /usr/lib/x86_64-linux-gnu/{*crt*.o,libc.{so,a},libc_nonshared.a,libdl.{so,a},libg.a,libgmp.{so,a},libm.{so,a},libmvec.{so,a},libmvec_nonshared.a,libnuma.{so,a},libpthread.{so,a},librt.{so,a},lib*san*,libstdc++.so.6,libutil.{so,a}}
+BIN /usr/lib/gcc
+BIN /usr/include
+BIN /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
