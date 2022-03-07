@@ -218,6 +218,8 @@ class PackageBuilder:
         if binary_path[0] != "/":
             binary_path = self.run_docker_oneshot(["which", binary_path]).decode().strip("\n")
 
+        binary_path = os.path.normpath(binary_path)
+
         if binary_path in self.pending_addition_binaries or binary_path in self.added_binaries:
             return
 
