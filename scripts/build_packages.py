@@ -468,10 +468,15 @@ class PackageBuilder:
 
 
 def main():
-    package_name = sys.argv[1]
-    path = os.path.join("packages", package_name)
-    with PackageBuilder(package_name, path) as pkg:
-        pkg.build()
+    if len(sys.argv) == 1:
+        package_names = os.listdir("packages")
+    else:
+        package_names = sys.argv[1:]
+
+    for package_name in package_names:
+        path = os.path.join("packages", package_name)
+        with PackageBuilder(package_name, path) as pkg:
+            pkg.build()
 
 
 if __name__ == "__main__":
