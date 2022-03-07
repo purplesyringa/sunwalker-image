@@ -374,6 +374,9 @@ class PackageBuilder:
             if " => " in line and line.startswith("\tld-"):
                 # Linker is specified by name--resolve path
                 expected_linker_paths.append(line.partition(" => ")[2].partition(" (")[0])
+            elif " => " in line and line.startswith("\t/") and "/ld-" in line:
+                # Linker is specified as a symlink
+                expected_linker_paths.append(line[1:].partition(" => ")[0])
             elif " => " not in line and "/ld-" in line:
                 # Linker is specified by path
                 expected_linker_paths.append(line[1:].partition(" (")[0])
