@@ -335,9 +335,27 @@ class PackageBuilder:
         else:
             # musl ldd does not support multiple arguments. ld.so --list doesn't support multiple arguments either, it
             # treats the second argument as a symbol name.
-            for file in files:
-                stdout = self.run_docker_oneshot(command_prefix + [file], check=False, stderr=False)[1].decode()
-                success.append(self.add_dependencies_from_ldd_output(stdout.splitlines(), file, linker_kind))
+
+            if linker_path is None:
+                sh_script = 'for file in "$@"; do echo "$file:"; ldd "$file"; done'
+                sh_args = []
+            else:
+                sh_script = 'linker_path="$1"; shift; for file in "$@"; do echo "$file:"; "$linker_path" --list "$file"; done'
+                sh_args = [linker_path]
+
+            stdout = self.run_docker_oneshot(["sh", "-c", sh_script, "-"] + sh_args + files, check=False, stderr=False)[1].decode()
+
+            current_file: Optional[str] = None
+            buffer_lines: list[str] = []
+            for line in stdout.splitlines() + [":"]:
+                if not line.startswith("\t") and line.endswith(":"):
+                    # Next file
+                    if current_file is not None:
+                        success.append(self.add_dependencies_from_ldd_output(buffer_lines, current_file, linker_kind))
+                    current_file = line[:-1]
+                    buffer_lines = []
+                else:
+                    buffer_lines.append(line)
 
         return success
 
