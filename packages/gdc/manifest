@@ -1,8 +1,0 @@
-BIN gdc
-BIN ar as cpp gold ld ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
-BIN /usr/lib/x86_64-linux-gnu/{*crt*.o,libc.{so,a},libc_nonshared.a,libdl.{so,a},libg.a,libm.{so,a},libmvec.{so,a},libmvec_nonshared.a,libpthread.{so,a},libpthread_nonshared.a,librt.{so,a},lib*san*,libstdc++.so.6,libutil.{so,a}}
-BIN /dlang/gdc-*/{bin,lib*}
-BIN /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2  # whoever uses this interpreter is an idiot
-
-# You guessed it, LD_LIBRARY_PATH is incomplete
-LD_LIBRARY_PATH="$(echo /dlang/gdc-*/lib64):$LD_LIBRARY_PATH"

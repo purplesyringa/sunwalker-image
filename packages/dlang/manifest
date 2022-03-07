@@ -1,0 +1,15 @@
+PATH="$(echo /dlang/dmd/dmd-*/linux/bin64):$(echo /dlang/gdc/gdc-*/bin):$(echo /dlang/ldc/ldc-*/bin):$PATH"
+LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:$(echo /dlang/dmd/dmd-*/linux/lib64):$(echo /dlang/gdc/gdc-*/lib64):$(echo /dlang/gdc/gdc-*/lib):$(echo /dlang/ldc/ldc-*/lib):$LD_LIBRARY_PATH"  # ldc2 needs latest libstdc++, but gdc provides its own old version of libstdc++, so we need to put sysroot here
+
+# dmd needs gcc, gdc provides its own gcc, let's use it
+BIN dmd /dlang/dmd/dmd-*/linux/{bin64,lib64} /dlang/dmd/dmd-*/src/{druntime,phobos}
+BIN gdc /dlang/gdc/gdc-*/{bin,lib,lib64,libexec}
+BIN ldc2 /dlang/ldc/ldc-*/{bin,etc,import,lib}
+
+# We have to provide binutils manually
+BIN ar as cpp gold ld ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
+BIN /usr/lib/x86_64-linux-gnu/{*crt*.o,libc.{so,a},libc_nonshared.a,libdl.{so,a},libg.a,libm.{so,a},libmvec.{so,a},libpthread.{so,a},librt.{so,a},lib*san*,libstdc++.so.6,libutil.{so,a}}
+
+BIN /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2  # whoever uses this interpreter directly is an idiot
+
+BIN /lib  # a symlink to /usr/lib

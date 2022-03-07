@@ -1,1 +1,0 @@
-FROM dlanguage/gdc:latest
