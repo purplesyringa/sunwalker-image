@@ -54,6 +54,13 @@ This structure is specifically designed so that you can use sunwalker-image with
 The `.sunwalker` directories contain various configuration data. `env`, for instance, contains environmental variables in `name=value` format. This includes `PATH` and `LD_LIBRARY_PATH`, which have to be configured correctly for the packages to work.
 
 
+## Licesing
+
+The few scripts and configuration files (`Dockerfile`, `manifest`, etc.) stored in this repository are licensed under GNU General Public License version 3 or later, at your option. The full text of GPLv3 is stored in [LICENSE](LICENSE).
+
+The licenses of the contents of packages are stored in `packages/*/LICENSE`. IANAL, but I believe that all the packages in this repository are [GPL-compatible](https://www.gnu.org/licenses/license-list.en.html). Keep in mind that the licenses were pulled on March 8, 2022, so while they were correct (to the best of my knowledge) on that date, the latest versions of the packages may be licensed under different conditions. You are strongly advised to do the research yourself. If you find any discrepancies, please don't hesitate to contact me via GitHub issues--I do care about licensing and would like to resolve the problems, should they appear.
+
+
 ## Building an image
 
 Firstly, you need to build each package. A built package is a single .tar.gz file, containing a rootfs (not enclosed in a directory called `gcc`, `go`, etc.).
