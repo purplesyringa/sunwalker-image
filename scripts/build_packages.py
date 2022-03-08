@@ -143,7 +143,7 @@ class PackageBuilder:
     # and split the resulting string by whitespace, honoring escaping, quoting, etc. Basically does the same thing that
     # shells do to get from a shell command to an argv list.
     def substitute_and_split(self, s: str) -> list[str]:
-        return self.split_null(self.run_docker_oneshot(["sh", "-c", r"printf '%s\0' '' " + s], stderr=False).decode()[1:])
+        return self.split_null(self.run_docker_oneshot(["bash", "-c", r"printf '%s\0' '' " + s], stderr=False).decode()[1:])
 
 
     # Detect configuration of the Docker container and various utilities, such as:
@@ -179,7 +179,7 @@ class PackageBuilder:
         if line.startswith("RUN "):
             command = line[4:].strip()
             print("-> Run", command)
-            out = self.run_docker_oneshot(["sh", "-c", f"{command}; echo; printf __SETENV__; env -0"]).decode()
+            out = self.run_docker_oneshot(["bash", "-c", f"{command}; echo; printf __SETENV__; env -0"]).decode()
             out, env = out[:out.index("\n__SETENV__")], out[out.index("\n__SETENV__") + len("\n__SETENV__"):]
             print(out, end="", flush=True)
             for line in self.split_null(env):
