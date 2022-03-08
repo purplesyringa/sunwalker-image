@@ -21,7 +21,7 @@ On Ubuntu the above can be installed using:
 
 An *image* is a single file in squashfs format, usually named `image.sfs` or similarly, or a directory containing the unpacked contents of said file. An image is several gigabytes large and contains everything necessary to compile and run various programs written in different languages or for different SDKs.
 
-An image contains several *packages*, which is approximately sunwalker's way of saying "SDK". A package is a full-blown rootfs abiding [FHS](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard). Everything unnecessary stripped--and this includes busybox and bash. A package may support a single language with a single compiler/interpreter, like the `cpython3` package does, or multiple languages with similar requirements or installed in a similar way (e.g. `sdkman`, which supports Java, Kotlin, and Scala), or a single language with several implementations (e.g. `dlang` supports both DMD, GDC, and LDC, because they all use the same stdlib).
+An image contains several *packages*, which is approximately sunwalker's way of saying "SDK". A package is a full-blown rootfs abiding [FHS](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard). Everything unnecessary is stripped, including busybox and bash. A package may support a single language with a single compiler/interpreter, like the `cpython3` package does, or multiple languages with similar requirements or installed in a similar way (e.g. `sdkman`, which supports Java, Kotlin, and Scala), or a single language with several implementations (e.g. `dlang` supports both DMD, GDC, and LDC, because they all use the same stdlib).
 
 Physically, an unpacked image is of the following hierarchy:
 
@@ -51,10 +51,10 @@ This structure is specifically designed so that you can use sunwalker-image with
 # chroot /mnt/gcc /usr/local/bin/gcc -v
 ```
 
-The `.sunwalker` directories contain various configuration data. `env`, for instance, contains environmental variables in `name=value` format. This includes `PATH` and `LD_LIBRARY_PATH`, which have to be configured correctly for the packages to work.
+The `.sunwalker` directories contain various configuration data. `env`, for instance, contains environment variables in `name=value` format. This includes `PATH` and `LD_LIBRARY_PATH`, which have to be configured correctly for the packages to work.
 
 
-## Licesing
+## Licensing
 
 The few scripts and configuration files (`Dockerfile`, `manifest`, etc.) stored in this repository are licensed under GNU General Public License version 3 or later, at your option. The full text of GPLv3 is stored in [LICENSE](LICENSE).
 
