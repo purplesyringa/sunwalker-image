@@ -1,0 +1,22 @@
+PATH="/llvm/bin:$PATH"
+LD_LIBRARY_PATH="/llvm/lib:/llvm/libexec:$LD_LIBRARY_PATH"
+
+BIN clang clang++
+BIN /llvm/{lib,include,share,libexec}
+
+RUN ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so
+BIN ar as gold ld ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
+BIN /usr/lib/x86_64-linux-gnu/{*crt*.o,libc.{so,a},libc_nonshared.a,libdl.{so,a},libg.a,libm.{so,a},libmvec.{so,a},libmvec_nonshared.a,libpthread.{so,a},librt.{so,a},libstdc++.so,libutil.{so,a}}
+BIN /usr/lib/gcc/x86_64-linux-gnu/7/{*crt*.o,libgcc.a,libgcc_s.so,libobjc{_gc,}.{so,a}}
+BIN /usr/lib/libgnustep-base.so
+BIN /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+
+RUN ln -s /usr/lib/gcc/x86_64-linux-gnu/7/include/objc /usr/include/GNUstep/objc
+BIN /usr/include
+CPLUS_INCLUDE_PATH=/usr/include/c++/8:/usr/include/x86_64-linux-gnu/c++/8
+OBJC_INCLUDE_PATH=/usr/include/GNUstep
+
+RUN printf "root:x:0:0:root:/root:/bin/bash\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\n" >/etc/passwd
+BIN /etc/passwd /etc/nsswitch.conf /usr/lib/x86_64-linux-gnu/libnss_*.so
+
+BIN /usr/lib/x86_64-linux-gnu/gconv
