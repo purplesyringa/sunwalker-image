@@ -1,0 +1,3 @@
+BIN mono mcs csc
+BIN /usr/lib/mono /usr/lib/libmono* /etc/mono
+BIN /pascalabc
