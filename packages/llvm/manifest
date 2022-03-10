@@ -2,7 +2,9 @@ PATH="/llvm/bin:$PATH"
 LD_LIBRARY_PATH="/llvm/lib:/llvm/libexec:$LD_LIBRARY_PATH"
 
 BIN clang clang++
-BIN /llvm/{lib,include,share,libexec}
+BIN /llvm/{include,share,libexec}
+BIN /llvm/lib/clang/*/include
+# BIN /llvm/lib
 
 RUN ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so
 BIN ar as gold ld ld.bfd ld.gold nm objcopy objdump ranlib readelf size strip
