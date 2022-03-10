@@ -247,23 +247,8 @@ class PackageBuilder:
             lst = self.pending_addition_binaries
             self.pending_addition_binaries = {}
 
-            symlinks = self.split_null(self.run_docker_oneshot(["find", *lst.keys(), "-maxdepth", "0", "-type", "l", "-print0"]).decode())
-            if symlinks:
-                if self.readlink_supports_zero_terminated_output:
-                    link_targets = self.split_null(self.run_docker_oneshot(["readlink", "-z", *symlinks]).decode())
-                else:
-                    link_targets = []
-                    for symlink in symlinks:
-                        link_targets.append(self.run_docker_oneshot(["readlink", symlink])[:-1].decode())
-                assert len(symlinks) == len(link_targets)
-                for symlink, link_target in zip(symlinks, link_targets):
-                    abs_link_target = os.path.abspath(os.path.join(os.path.dirname(symlink), link_target))
-                    print("-> Add symlink", symlink, "->", abs_link_target)
-                    self.added_binaries.add(symlink)
-                    self.add_binary(abs_link_target)
-
-                for symlink in symlinks:
-                    del lst[symlink]
+            for symlink in self.add_symlinks_from_list(list(lst.keys())):
+                del lst[symlink]
 
             if not lst:
                 continue
@@ -296,16 +281,35 @@ class PackageBuilder:
                 if not paths:
                     continue
 
+                # Handle nested symlinks
+                paths = list(set(paths) - set(self.add_symlinks_from_list(paths)))
+
                 success_list = self.add_shared_elf_recursively(paths, linker_kind, linker_path)
 
                 # Add the binaries to the success list if the addition was successful
                 for path, success in zip(paths, success_list):
                     if success:
-                        if linker_path is None:
-                            print("-> Add binary", path)
-                        else:
-                            print("-> Add binary", path)
+                        print("-> Add binary", path)
                         self.added_binaries.add(path)
+
+
+    def add_symlinks_from_list(self, files: list[str]):
+        symlinks = self.split_null(self.run_docker_oneshot(["find", *files, "-maxdepth", "0", "-type", "l", "-print0"]).decode())
+        if symlinks:
+            if self.readlink_supports_zero_terminated_output:
+                link_targets = self.split_null(self.run_docker_oneshot(["readlink", "-z", *symlinks]).decode())
+            else:
+                link_targets = []
+                for symlink in symlinks:
+                    link_targets.append(self.run_docker_oneshot(["readlink", symlink])[:-1].decode())
+            assert len(symlinks) == len(link_targets)
+            for symlink, link_target in zip(symlinks, link_targets):
+                abs_link_target = os.path.abspath(os.path.join(os.path.dirname(symlink), link_target))
+                print("-> Add symlink", symlink, "->", abs_link_target)
+                self.added_binaries.add(symlink)
+                self.add_binary(abs_link_target)
+
+        return symlinks
 
 
     # Add dependencies of shared ELF objects. Returns a list of bools indicating whether the parsing was
