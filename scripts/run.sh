@@ -48,6 +48,9 @@ if [[ -z "$pkg" ]]; then
 fi
 
 
+if ! [[ -e "$root/tmp" ]]; then
+	mkdir "$root/tmp"
+fi
 mount -t tmpfs tmpfs "$root/tmp"
 
 mkdir "$root/tmp/upper"

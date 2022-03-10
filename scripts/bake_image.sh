@@ -10,6 +10,9 @@ fi
 
 root="$(realpath "$(dirname "$0")/..")"
 
+if ! [[ -e "$root/tmp" ]]; then
+	mkdir "$root/tmp"
+fi
 mount -t tmpfs tmpfs "$root/tmp"
 
 echo "Mounting packages"
