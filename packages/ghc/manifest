@@ -1,5 +1,7 @@
 # Remove heavy profiling builds
 RUN find /opt/ghc/*/lib \( -name "*_p.a" -o -name "*.p_hi" -o -name "*.p_o" \) -delete
+# Remove files only used for static compilation
+RUN find /opt/ghc/*/lib \( -name "*.a" -o -name "*.hi" -o -name "*.o" \) -delete
 
 BIN ghc
 BIN /opt/ghc
