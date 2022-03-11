@@ -1,4 +1,6 @@
 BIN fpc
 BIN ppcx64
 BIN ld
-BIN /usr/lib/fpc
+BIN /usr/lib/fpc/lexyacc
+BIN /usr/lib/fpc/*/{fpmkinst,msg,ppcx64,samplecfg}
+BIN /usr/lib/fpc/*/units/*/{rtl-generics,fcl-db,rtl,fcl-web,fcl-passrc,fcl-xml,fcl-base,fcl-report,rtl-unicode,rtl-objpas,fppkg,libxml2,fcl-res,fpmkunit,fcl-json,fcl-js,ptc,fcl-fpcunit,rtl-extra,fpindexer,sqlite,paszlib,ibase,numlib,fcl-net,gmp,regexpr,fcl-process,fcl-stl,fcl-registry,rtl-console,fcl-extra,symbolic,gdbint,libsee,libenet,hash,libgd,ggi,imlib,pxlib,fcl-async,unzip,libffi,bzip2,newt,libtar,pthreads,vcl-compat,users,mad,openal,zlib,utmp,utils-lexyacc,iconvenc,gdbm,dts,libmagic,uuid,a52,fftw,fastcgi,proj4,rsvg,syslog,modplug,libgc}
