@@ -1,3 +1,5 @@
 BIN dart
-BIN /usr/lib/dart
+BIN /usr/lib/dart/bin/{snapshots/{dartdev,kernel-service,gen_kernel,kernel_worker}.dart.snapshot,utils,dart,dartaotruntime}
+BIN /usr/lib/dart/{lib,include}
+
 BIN chmod
