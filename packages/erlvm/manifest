@@ -1,0 +1,3 @@
+BIN iex elixir elixirc erl
+BIN basename cat dirname mkdir readlink sed
+BIN /usr/local/lib/elixir /usr/local/lib/erlang

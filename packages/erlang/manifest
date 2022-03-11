@@ -1,3 +1,0 @@
-BIN erl
-BIN /usr/local/lib/erlang
-BIN sed
