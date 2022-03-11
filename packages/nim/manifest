@@ -1,0 +1,11 @@
+BIN nim
+BIN /nim/lib
+
+BIN sh
+
+BIN gcc
+BIN ar as cpp ld nm objcopy objdump ranlib readelf size strip
+BIN /usr/lib/*crt*.o /usr/lib/gcc/x86_64-alpine-linux-musl/*/{*crt*.o,libgcc*.a}
+BIN /usr/lib/{libc.{so,a},libdl.a,libgcc_s.so{.1,},libm.a,libpthread.a,librt.a,libssp_nonshared.a,libutil.a}
+BIN /usr/libexec/gcc/x86_64-alpine-linux-musl/*/{plugin,cc1,lto1,lto-wrapper,collect2,liblto*}
+BIN /usr/include
