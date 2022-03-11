@@ -12,6 +12,8 @@ root="$(realpath "$(dirname "$0")/..")"
 
 use_dev=0
 files=()
+dir=/
+dir_set=0
 pkg=""
 while [[ "$#" -gt 0 ]]; do
 	if [[ "$1" =~ ^-.* ]]; then
@@ -24,6 +26,23 @@ while [[ "$#" -gt 0 ]]; do
 			shift
 		elif [[ "$1" =~ -f.* ]]; then
 			files+=( "${1:2}" )
+			shift
+		elif [[ "$1" == "-d" ]] || [[ "$1" == "--chdir" ]]; then
+			if [[ "$dir_set" -eq 1 ]]; then
+				echo "--chdir/-d is repeated twice" >&2
+				exit 1
+			fi
+			shift
+			dir="$1"
+			dir_set=1
+			shift
+		elif [[ "$1" =~ -d.* ]]; then
+			if [[ "$dir_set" -eq 1 ]]; then
+				echo "--chdir/-d is repeated twice" >&2
+				exit 1
+			fi
+			dir="${1:2}"
+			dir_set=1
 			shift
 		elif [[ "$1" == "--" ]]; then
 			shift
@@ -109,7 +128,7 @@ mkdir "$root/tmp/root/old-root"
 cd "$root/tmp/root"
 
 pivot_root . old-root
-cd /
+cd "$dir"
 
 export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib:/lib64:/lib
 export LANGUAGE=en_US
