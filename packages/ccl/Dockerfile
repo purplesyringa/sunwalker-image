@@ -1,0 +1,1 @@
+FROM clfoundation/ccl:latest

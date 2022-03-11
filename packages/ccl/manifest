@@ -1,0 +1,3 @@
+BIN ccl
+BIN /usr/local/src/ccl/lx86cl64{.image,}
+BIN uname
