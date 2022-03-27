@@ -47,7 +47,7 @@ class MakefileParser:
         elif len(self.build_statements) == 1:
             build_lisp = self.build_statements[0].to_lisp()
         else:
-            build_lisp = f"(seq {' '.join(statement.to_lisp() for statement in self.build_statements)})"
+            build_lisp = f"(concat {' '.join(statement.to_lisp() for statement in self.build_statements)})"
 
         if self.identify_lisp is None:
             raise GenerationError("'identify' target is missing")
@@ -57,7 +57,7 @@ class MakefileParser:
             raise GenerationError("No inputs detected")
 
         inputs = f"(list {' '.join(json.dumps(input) for input in self.inputs)})"
-        lisp = f"(language {self.identify_lisp} {self.base_rule_lisp} {inputs} {build_lisp} {self.run_lisp})"
+        lisp = f"(language (quote {self.identify_lisp}) (quote {self.base_rule_lisp}) {inputs} (quote {build_lisp}) {self.run_lisp})"
         return lisp
 
 
@@ -79,9 +79,9 @@ class MakefileParser:
         def factory(s):
             if "%" in s:
                 if self.non_exact_target_names:
-                    return GlobToken(s)
+                    return GlobToken("./" + s)
                 else:
-                    tokens = []
+                    tokens = [StringToken("./")]
                     for i, chunk in enumerate(s.split("%")):
                         if i > 0:
                             tokens.append(MetaVariableToken("$base"))
@@ -109,20 +109,20 @@ class MakefileParser:
             argv = statements[0].tokens
             prerequisites_code = f"(list {' '.join(factory(prerequisite).to_lisp() for prerequisite in prerequisites)})"
             argv_code = f"(list {' '.join(arg.to_lisp() for arg in argv)})"
-            self.run_lisp = f"(run {prerequisites_code} {argv_code})"
+            self.run_lisp = f"(run (quote {prerequisites_code}) (quote {argv_code}))"
         elif targets == ["identify"]:
             if prerequisites:
                 raise GenerationError("'identify' target must not have prerequisites")
             if len(statements) == 1:
                 insn = statements[0].to_lisp()
             else:
-                insn = f"(seq {' '.join(statement.to_lisp() for statement in statements)})"
+                insn = f"(concat {' '.join(statement.to_lisp() for statement in statements)})"
             self.identify_lisp = insn
         elif targets == ["base_rule"]:
             if len(statements) == 1:
                 insn = statements[0].to_lisp()
             else:
-                insn = f"(seq {' '.join(statement.to_lisp() for statement in statements)})"
+                insn = f"(concat {' '.join(statement.to_lisp() for statement in statements)})"
             self.base_rule_lisp = insn
         else:
             # Resolve targets
@@ -223,7 +223,7 @@ class SubShellToken(Token):
     def __str__(self):
         return f"\"$({self.stmt})\""
     def to_lisp(self):
-        return self.stmt.to_lisp()
+        return f"(stripnl {self.stmt.to_lisp()})"
     def substitute_variables(self, vars: dict[str, str]):
         return SubShellToken(self.stmt.substitute_variables(vars))
 
@@ -426,6 +426,20 @@ class CatBuiltinCommand(BuiltinCommand):
     def substitute_variables(self, vars: dict[str, str]):
         return CatBuiltinCommand([self.file.substitute_variables(vars)])
 
+class MvBuiltinCommand(BuiltinCommand):
+    def __init__(self, argv):
+        if len(argv) != 2:
+            raise GenerationError("mv takes two arugments")
+        self.from_, self.to = argv
+    def __str__(self):
+        return f"mv {self.from_} {self.to}"
+    def to_lisp(self, input=None) -> str:
+        if input is not None:
+            raise GenerationError("mv does not expect input")
+        return f"(mv {self.from_.to_lisp()} {self.to.to_lisp()})"
+    def substitute_variables(self, vars: dict[str, str]):
+        return MvBuiltinCommand([self.from_.substitute_variables(vars), self.to.substitute_variables(vars)])
+
 BUILTIN_COMMANDS: dict[str, Type[BuiltinCommand]] = {
     "echo": EchoBuiltinCommand,
     "head": HeadBuiltinCommand,
@@ -434,7 +448,8 @@ BUILTIN_COMMANDS: dict[str, Type[BuiltinCommand]] = {
     "cut": CutBuiltinCommand,
     "grep": GrepBuiltinCommand,
     "basename": BasenameBuiltinCommand,
-    "cat": CatBuiltinCommand
+    "cat": CatBuiltinCommand,
+    "mv": MvBuiltinCommand
 }
 
 
